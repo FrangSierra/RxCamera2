@@ -17,9 +17,9 @@ import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
 
 public class RxCameraCaptureSession {
 
@@ -80,34 +80,31 @@ public class RxCameraCaptureSession {
     }
 
     @NonNull
-    public static Observable<CameraDevice> getDevice(@NonNull final CameraCaptureSession captureSession) {
-        return Observable.create(new ObservableOnSubscribe<CameraDevice>() {
+    public static Single<CameraDevice> getDevice(@NonNull final CameraCaptureSession captureSession) {
+        return Single.create(new SingleOnSubscribe<CameraDevice>() {
             @Override
-            public void subscribe(ObservableEmitter<CameraDevice> e) throws Exception {
-                e.onNext(captureSession.getDevice());
-                //TODO Oncomplete/single?
+            public void subscribe(SingleEmitter<CameraDevice> e) throws Exception {
+                e.onSuccess(captureSession.getDevice());
             }
         });
     }
 
     @NonNull
-    public static Observable<Surface> getInputSurface(@NonNull final CameraCaptureSession captureSession) {
-        return Observable.create(new ObservableOnSubscribe<Surface>() {
+    public static Single<Surface> getInputSurface(@NonNull final CameraCaptureSession captureSession) {
+        return Single.create(new SingleOnSubscribe<Surface>() {
             @Override
-            public void subscribe(ObservableEmitter<Surface> e) throws Exception {
-                e.onNext(captureSession.getInputSurface());
-                //TODO Oncomplete/single?
+            public void subscribe(SingleEmitter<Surface> e) throws Exception {
+                e.onSuccess(captureSession.getInputSurface());
             }
         });
     }
 
     @NonNull
-    public static Observable<Boolean> isReprocessable(@NonNull final CameraCaptureSession captureSession) {
-        return Observable.create(new ObservableOnSubscribe<Boolean>() {
+    public static Single<Boolean> isReprocessable(@NonNull final CameraCaptureSession captureSession) {
+        return Single.create(new SingleOnSubscribe<Boolean>() {
             @Override
-            public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
-                e.onNext(captureSession.isReprocessable());
-                //TODO Oncomplete/single?
+            public void subscribe(SingleEmitter<Boolean> e) throws Exception {
+                e.onSuccess(captureSession.isReprocessable());
             }
         });
     }
