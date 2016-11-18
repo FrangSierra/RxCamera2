@@ -15,6 +15,9 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.functions.Cancellable;
 
+import static durdinapps.rxcamera2.OpenCameraEvent.EventType.DISCONNECTED;
+import static durdinapps.rxcamera2.OpenCameraEvent.EventType.OPENED;
+
 public class RxCameraManager {
 
     @NonNull
@@ -51,12 +54,12 @@ public class RxCameraManager {
                     cameraManager.openCamera(cameraId, new CameraDevice.StateCallback() {
                         @Override
                         public void onOpened(CameraDevice camera) {
-                            e.onNext(new OpenCameraEvent(camera, OpenCameraEvent.EventType.OPENED));
+                            e.onNext(new OpenCameraEvent(camera, OPENED));
                         }
 
                         @Override
                         public void onDisconnected(CameraDevice camera) {
-                            e.onNext(new OpenCameraEvent(camera, OpenCameraEvent.EventType.DISCONNECTED));
+                            e.onNext(new OpenCameraEvent(camera, DISCONNECTED));
                         }
 
                         @Override
