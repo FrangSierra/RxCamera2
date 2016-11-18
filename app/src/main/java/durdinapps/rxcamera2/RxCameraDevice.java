@@ -1,7 +1,6 @@
 package durdinapps.rxcamera2;
 
 import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
@@ -12,6 +11,8 @@ import android.view.Surface;
 
 import java.util.List;
 
+import durdinapps.rxcamera2.callbacks.RxCameraStateCallback;
+import durdinapps.rxcamera2.wrappers.RxConfigureSessionEvent;
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
 import io.reactivex.CompletableOnSubscribe;
@@ -21,8 +22,19 @@ import io.reactivex.SingleOnSubscribe;
 
 public class RxCameraDevice {
 
+    private final CameraDevice cameraDevice;
+
+    public RxCameraDevice(CameraDevice cameraDevice){
+        this.cameraDevice = cameraDevice;
+    }
+
     @NonNull
-    public static Completable close(@NonNull final CameraDevice cameraDevice) {
+    public CameraDevice getCameraDevice() {
+        return cameraDevice;
+    }
+
+    @NonNull
+    public Completable close() {
         return Completable.create(new CompletableOnSubscribe() {
             @Override
             public void subscribe(CompletableEmitter e) throws Exception {
@@ -33,8 +45,7 @@ public class RxCameraDevice {
     }
 
     @NonNull
-    public static Single<CaptureRequest.Builder> createCaptureRequest(@NonNull final CameraDevice cameraDevice,
-                                                                      @NonNull final int templateType) {
+    public Single<CaptureRequest.Builder> createCaptureRequest(@NonNull final int templateType) {
         return Single.create(new SingleOnSubscribe<CaptureRequest.Builder>() {
             @Override
             public void subscribe(SingleEmitter<CaptureRequest.Builder> e) throws Exception {
@@ -48,10 +59,9 @@ public class RxCameraDevice {
     }
 
     @NonNull
-    public static Single<CameraCaptureSession> createCaptureSession(@NonNull final CameraDevice cameraDevice,
-                                                                    @NonNull final List<Surface> outputs,
-                                                                    final Handler handler) {
-        return Single.create(new SingleOnSubscribe() {
+    public Single<RxConfigureSessionEvent> createCaptureSession(@NonNull final List<Surface> outputs,
+                                                                final Handler handler) {
+        return Single.create(new SingleOnSubscribe<RxConfigureSessionEvent>() {
             @Override
             public void subscribe(final SingleEmitter e) throws Exception {
                 try {
@@ -64,10 +74,9 @@ public class RxCameraDevice {
     }
 
     @NonNull
-    public static Single<CameraCaptureSession> createCaptureSessionByOutputConfigurations(@NonNull final CameraDevice cameraDevice,
-                                                                                          @NonNull final List<Surface> outputs,
-                                                                                          final Handler handler) {
-        return Single.create(new SingleOnSubscribe() {
+    public Single<RxConfigureSessionEvent> createCaptureSessionByOutputConfigurations(@NonNull final List<Surface> outputs,
+                                                                                      final Handler handler) {
+        return Single.create(new SingleOnSubscribe<RxConfigureSessionEvent>() {
             @Override
             public void subscribe(final SingleEmitter e) throws Exception {
                 try {
@@ -80,8 +89,7 @@ public class RxCameraDevice {
     }
 
     @NonNull
-    public static Single<CaptureRequest.Builder> createReprocessCaptureRequest(@NonNull final CameraDevice cameraDevice,
-                                                                               @NonNull final TotalCaptureResult totalCaptureResult) {
+    public Single<CaptureRequest.Builder> createReprocessCaptureRequest(@NonNull final TotalCaptureResult totalCaptureResult) {
         return Single.create(new SingleOnSubscribe<CaptureRequest.Builder>() {
             @Override
             public void subscribe(SingleEmitter<CaptureRequest.Builder> e) throws Exception {
@@ -95,30 +103,15 @@ public class RxCameraDevice {
     }
 
     @NonNull
-    public static Single<CameraCaptureSession> createReprocessableCaptureSession(@NonNull final CameraDevice cameraDevice,
-                                                                                 @NonNull final InputConfiguration inputConfiguration,
-                                                                                 @NonNull final List<Surface> outputs,
-                                                                                 final Handler handler) {
-        return Single.create(new SingleOnSubscribe() {
+    public Single<RxConfigureSessionEvent> createReprocessableCaptureSession(@NonNull final InputConfiguration inputConfiguration,
+                                                                             @NonNull final List<Surface> outputs,
+                                                                             final Handler handler) {
+        return Single.create(new SingleOnSubscribe<RxConfigureSessionEvent>() {
             @Override
             public void subscribe(final SingleEmitter e) throws Exception {
                 try {
                     cameraDevice.createReprocessableCaptureSession(inputConfiguration, outputs, new RxCameraStateCallback(e), handler);
                 } catch (CameraAccessException | IllegalStateException | IllegalArgumentException ex) {
-                    e.onError(ex);
-                }
-            }
-        });
-    }
-
-    @NonNull
-    public static Single<String> getId(@NonNull final CameraDevice cameraDevice) {
-        return Single.create(new SingleOnSubscribe<String>() {
-            @Override
-            public void subscribe(SingleEmitter<String> e) throws Exception {
-                try {
-                    e.onSuccess(cameraDevice.getId());
-                } catch (Exception ex) {
                     e.onError(ex);
                 }
             }

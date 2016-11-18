@@ -1,6 +1,5 @@
-package durdinapps.rxcamera2;
+package durdinapps.rxcamera2.wrappers;
 
-import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
@@ -8,21 +7,25 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.support.annotation.NonNull;
 import android.view.Surface;
 
+import durdinapps.rxcamera2.RxCameraCaptureSession;
+
 
 public class RxCameraCaptureEvent {
 
-    private CameraCaptureSession session;
-    private CaptureRequest request;
-    private long timestamp;
-    private long frameNumber;
-    private CaptureResult partialResult;
-    private TotalCaptureResult totalCaptureResult;
-    private CaptureFailure failure;
-    private int sequenceId;
-    private Surface target;
-    private EventType eventType;
+    @NonNull
+    public RxCameraCaptureSession session;
+    public CaptureRequest request;
+    public long timestamp;
+    public long frameNumber;
+    public CaptureResult partialResult;
+    public TotalCaptureResult totalCaptureResult;
+    public CaptureFailure failure;
+    public int sequenceId;
+    public Surface target;
+    @NonNull
+    public final EventType eventType;
 
-    public RxCameraCaptureEvent(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request,
+    public RxCameraCaptureEvent(@NonNull RxCameraCaptureSession session, @NonNull CaptureRequest request,
                                 @NonNull long timestamp, @NonNull long frameNumber) {
         this.session = session;
         this.request = request;
@@ -32,7 +35,7 @@ public class RxCameraCaptureEvent {
     }
 
 
-    public RxCameraCaptureEvent(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request,
+    public RxCameraCaptureEvent(@NonNull RxCameraCaptureSession session, @NonNull CaptureRequest request,
                                 @NonNull CaptureResult partialResult) {
         this.session = session;
         this.request = request;
@@ -40,7 +43,7 @@ public class RxCameraCaptureEvent {
         eventType = EventType.PROGRESSED;
     }
 
-    public RxCameraCaptureEvent(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request,
+    public RxCameraCaptureEvent(@NonNull RxCameraCaptureSession session, @NonNull CaptureRequest request,
                                 @NonNull TotalCaptureResult totalCaptureResult) {
         this.session = session;
         this.request = request;
@@ -48,7 +51,7 @@ public class RxCameraCaptureEvent {
         eventType = EventType.COMPLETED;
     }
 
-    public RxCameraCaptureEvent(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request,
+    public RxCameraCaptureEvent(@NonNull RxCameraCaptureSession session, @NonNull CaptureRequest request,
                                 @NonNull CaptureFailure failure) {
         this.session = session;
         this.request = request;
@@ -56,7 +59,7 @@ public class RxCameraCaptureEvent {
         eventType = EventType.FAILED;
     }
 
-    public RxCameraCaptureEvent(@NonNull CameraCaptureSession session, @NonNull int sequenceId,
+    public RxCameraCaptureEvent(@NonNull RxCameraCaptureSession session, @NonNull int sequenceId,
                                 @NonNull long frameNumber) {
         this.session = session;
         this.sequenceId = sequenceId;
@@ -64,7 +67,7 @@ public class RxCameraCaptureEvent {
         eventType = EventType.SEQUENCE_COMPLETED;
     }
 
-    public RxCameraCaptureEvent(@NonNull CameraCaptureSession session,
+    public RxCameraCaptureEvent(@NonNull RxCameraCaptureSession session,
                                 @NonNull int sequenceId) {
         this.session = session;
         this.sequenceId = sequenceId;
@@ -72,7 +75,7 @@ public class RxCameraCaptureEvent {
     }
 
 
-    public RxCameraCaptureEvent(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request,
+    public RxCameraCaptureEvent(@NonNull RxCameraCaptureSession session, @NonNull CaptureRequest request,
                                 @NonNull Surface target, @NonNull long frameNumber) {
         this.session = session;
         this.request = request;
@@ -81,7 +84,7 @@ public class RxCameraCaptureEvent {
         eventType = EventType.BUFFER_LOST;
     }
 
-    public CameraCaptureSession getSession() {
+    public RxCameraCaptureSession getSession() {
         return session;
     }
 

@@ -2,7 +2,6 @@ package durdinapps.rxcamera2;
 
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
-import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CaptureRequest;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -10,6 +9,8 @@ import android.view.Surface;
 
 import java.util.List;
 
+import durdinapps.rxcamera2.callbacks.RxCameraCaptureCallback;
+import durdinapps.rxcamera2.wrappers.RxCameraCaptureEvent;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
@@ -17,14 +18,22 @@ import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
-import io.reactivex.Single;
-import io.reactivex.SingleEmitter;
-import io.reactivex.SingleOnSubscribe;
 
 public class RxCameraCaptureSession {
 
+    private final CameraCaptureSession captureSession;
+
+    public RxCameraCaptureSession(CameraCaptureSession session){
+        this.captureSession = session;
+    }
+
     @NonNull
-    public static Completable abortCaptures(@NonNull final CameraCaptureSession captureSession) {
+    public CameraCaptureSession getCaptureSession() {
+        return captureSession;
+    }
+
+    @NonNull
+    public Completable abortCaptures() {
         return Completable.create(new CompletableOnSubscribe() {
             @Override
             public void subscribe(CompletableEmitter e) throws Exception {
@@ -39,8 +48,7 @@ public class RxCameraCaptureSession {
     }
 
     @NonNull
-    public static Flowable<RxCameraCaptureEvent> capture(@NonNull final CameraCaptureSession captureSession,
-                                                         @NonNull final CaptureRequest captureRequest, final Handler handler) {
+    public Flowable<RxCameraCaptureEvent> capture(@NonNull final CaptureRequest captureRequest, final Handler handler) {
         return Flowable.create(new FlowableOnSubscribe<RxCameraCaptureEvent>() {
             @Override
             public void subscribe(final FlowableEmitter<RxCameraCaptureEvent> e) throws Exception {
@@ -50,12 +58,11 @@ public class RxCameraCaptureSession {
                     e.onError(ex);
                 }
             }
-        }, BackpressureStrategy.BUFFER);
+        }, BackpressureStrategy.DROP);
     }
 
     @NonNull
-    public static Flowable<RxCameraCaptureEvent> captureBurst(@NonNull final CameraCaptureSession captureSession,
-                                                              @NonNull final List<CaptureRequest> requests, final Handler handler) {
+    public Flowable<RxCameraCaptureEvent> captureBurst(@NonNull final List<CaptureRequest> requests, final Handler handler) {
         return Flowable.create(new FlowableOnSubscribe<RxCameraCaptureEvent>() {
             @Override
             public void subscribe(final FlowableEmitter<RxCameraCaptureEvent> e) throws Exception {
@@ -65,11 +72,11 @@ public class RxCameraCaptureSession {
                     e.onError(ex);
                 }
             }
-        }, BackpressureStrategy.BUFFER);
+        }, BackpressureStrategy.DROP);
     }
 
     @NonNull
-    public static Completable close(@NonNull final CameraCaptureSession captureSession) {
+    public Completable close() {
         return Completable.create(new CompletableOnSubscribe() {
             @Override
             public void subscribe(CompletableEmitter e) throws Exception {
@@ -80,37 +87,7 @@ public class RxCameraCaptureSession {
     }
 
     @NonNull
-    public static Single<CameraDevice> getDevice(@NonNull final CameraCaptureSession captureSession) {
-        return Single.create(new SingleOnSubscribe<CameraDevice>() {
-            @Override
-            public void subscribe(SingleEmitter<CameraDevice> e) throws Exception {
-                e.onSuccess(captureSession.getDevice());
-            }
-        });
-    }
-
-    @NonNull
-    public static Single<Surface> getInputSurface(@NonNull final CameraCaptureSession captureSession) {
-        return Single.create(new SingleOnSubscribe<Surface>() {
-            @Override
-            public void subscribe(SingleEmitter<Surface> e) throws Exception {
-                e.onSuccess(captureSession.getInputSurface());
-            }
-        });
-    }
-
-    @NonNull
-    public static Single<Boolean> isReprocessable(@NonNull final CameraCaptureSession captureSession) {
-        return Single.create(new SingleOnSubscribe<Boolean>() {
-            @Override
-            public void subscribe(SingleEmitter<Boolean> e) throws Exception {
-                e.onSuccess(captureSession.isReprocessable());
-            }
-        });
-    }
-
-    @NonNull
-    public static Completable prepare(@NonNull final CameraCaptureSession captureSession, @NonNull final Surface surface) {
+    public Completable prepare(@NonNull final Surface surface) {
         return Completable.create(new CompletableOnSubscribe() {
             @Override
             public void subscribe(CompletableEmitter e) throws Exception {
@@ -125,8 +102,7 @@ public class RxCameraCaptureSession {
     }
 
     @NonNull
-    public static Flowable<RxCameraCaptureEvent> setRepeatingBurst(@NonNull final CameraCaptureSession captureSession,
-                                                                   @NonNull final List<CaptureRequest> requests, final Handler handler) {
+    public Flowable<RxCameraCaptureEvent> setRepeatingBurst(@NonNull final List<CaptureRequest> requests, final Handler handler) {
         return Flowable.create(new FlowableOnSubscribe<RxCameraCaptureEvent>() {
             @Override
             public void subscribe(final FlowableEmitter<RxCameraCaptureEvent> e) throws Exception {
@@ -136,12 +112,11 @@ public class RxCameraCaptureSession {
                     e.onError(ex);
                 }
             }
-        }, BackpressureStrategy.BUFFER);
+        }, BackpressureStrategy.DROP);
     }
 
     @NonNull
-    public static Flowable<RxCameraCaptureEvent> setRepeatingRequest(@NonNull final CameraCaptureSession captureSession,
-                                                                     @NonNull final CaptureRequest captureRequest, final Handler handler) {
+    public Flowable<RxCameraCaptureEvent> setRepeatingRequest(@NonNull final CaptureRequest captureRequest, final Handler handler) {
         return Flowable.create(new FlowableOnSubscribe<RxCameraCaptureEvent>() {
             @Override
             public void subscribe(final FlowableEmitter<RxCameraCaptureEvent> e) throws Exception {
@@ -151,11 +126,11 @@ public class RxCameraCaptureSession {
                     e.onError(ex);
                 }
             }
-        }, BackpressureStrategy.BUFFER);
+        }, BackpressureStrategy.DROP);
     }
 
     @NonNull
-    public static Completable stopRepeating(@NonNull final CameraCaptureSession captureSession) {
+    public Completable stopRepeating() {
         return Completable.create(new CompletableOnSubscribe() {
             @Override
             public void subscribe(CompletableEmitter e) throws Exception {
