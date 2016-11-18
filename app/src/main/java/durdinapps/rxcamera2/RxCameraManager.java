@@ -42,8 +42,8 @@ public class RxCameraManager {
 
     @NonNull
     public static Observable<OpenCameraEvent> openCamera(@NonNull final CameraManager cameraManager,
-                                        @NonNull final String cameraId,
-                                        @NonNull final Handler handler) {
+                                                         @NonNull final String cameraId,
+                                                         @NonNull final Handler handler) {
         return Observable.create(new ObservableOnSubscribe() {
             @Override
             public void subscribe(final ObservableEmitter e) throws Exception {
