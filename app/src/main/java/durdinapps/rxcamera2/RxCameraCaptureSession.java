@@ -23,7 +23,7 @@ public class RxCameraCaptureSession {
 
     private final CameraCaptureSession captureSession;
 
-    public RxCameraCaptureSession(CameraCaptureSession session){
+    public RxCameraCaptureSession(CameraCaptureSession session) {
         this.captureSession = session;
     }
 
@@ -48,7 +48,9 @@ public class RxCameraCaptureSession {
     }
 
     @NonNull
-    public Flowable<RxCameraCaptureEvent> capture(@NonNull final CaptureRequest captureRequest, final Handler handler) {
+    public Flowable<RxCameraCaptureEvent> capture(@NonNull final CaptureRequest captureRequest,
+                                                  @NonNull BackpressureStrategy strategy,
+                                                  final Handler handler) {
         return Flowable.create(new FlowableOnSubscribe<RxCameraCaptureEvent>() {
             @Override
             public void subscribe(final FlowableEmitter<RxCameraCaptureEvent> e) throws Exception {
@@ -58,11 +60,13 @@ public class RxCameraCaptureSession {
                     e.onError(ex);
                 }
             }
-        }, BackpressureStrategy.DROP);
+        }, strategy);
     }
 
     @NonNull
-    public Flowable<RxCameraCaptureEvent> captureBurst(@NonNull final List<CaptureRequest> requests, final Handler handler) {
+    public Flowable<RxCameraCaptureEvent> captureBurst(@NonNull final List<CaptureRequest> requests,
+                                                       @NonNull BackpressureStrategy strategy,
+                                                       final Handler handler) {
         return Flowable.create(new FlowableOnSubscribe<RxCameraCaptureEvent>() {
             @Override
             public void subscribe(final FlowableEmitter<RxCameraCaptureEvent> e) throws Exception {
@@ -72,7 +76,7 @@ public class RxCameraCaptureSession {
                     e.onError(ex);
                 }
             }
-        }, BackpressureStrategy.DROP);
+        }, strategy);
     }
 
     @NonNull
@@ -102,7 +106,9 @@ public class RxCameraCaptureSession {
     }
 
     @NonNull
-    public Flowable<RxCameraCaptureEvent> setRepeatingBurst(@NonNull final List<CaptureRequest> requests, final Handler handler) {
+    public Flowable<RxCameraCaptureEvent> setRepeatingBurst(@NonNull final List<CaptureRequest> requests,
+                                                            @NonNull BackpressureStrategy strategy,
+                                                            final Handler handler) {
         return Flowable.create(new FlowableOnSubscribe<RxCameraCaptureEvent>() {
             @Override
             public void subscribe(final FlowableEmitter<RxCameraCaptureEvent> e) throws Exception {
@@ -112,11 +118,13 @@ public class RxCameraCaptureSession {
                     e.onError(ex);
                 }
             }
-        }, BackpressureStrategy.DROP);
+        }, strategy);
     }
 
     @NonNull
-    public Flowable<RxCameraCaptureEvent> setRepeatingRequest(@NonNull final CaptureRequest captureRequest, final Handler handler) {
+    public Flowable<RxCameraCaptureEvent> setRepeatingRequest(@NonNull final CaptureRequest captureRequest,
+                                                              @NonNull BackpressureStrategy strategy,
+                                                              final Handler handler) {
         return Flowable.create(new FlowableOnSubscribe<RxCameraCaptureEvent>() {
             @Override
             public void subscribe(final FlowableEmitter<RxCameraCaptureEvent> e) throws Exception {
@@ -126,7 +134,7 @@ public class RxCameraCaptureSession {
                     e.onError(ex);
                 }
             }
-        }, BackpressureStrategy.DROP);
+        }, strategy);
     }
 
     @NonNull
@@ -142,5 +150,29 @@ public class RxCameraCaptureSession {
                 }
             }
         });
+    }
+
+    @NonNull
+    public Flowable<RxCameraCaptureEvent> capture(@NonNull final CaptureRequest captureRequest,
+                                                  final Handler handler) {
+        return capture(captureRequest, BackpressureStrategy.DROP, handler);
+    }
+
+    @NonNull
+    public Flowable<RxCameraCaptureEvent> captureBurst(@NonNull final List<CaptureRequest> requests,
+                                                       final Handler handler) {
+        return captureBurst(requests, BackpressureStrategy.DROP, handler);
+    }
+
+    @NonNull
+    public Flowable<RxCameraCaptureEvent> setRepeatingBurst(@NonNull final List<CaptureRequest> requests,
+                                                            final Handler handler) {
+        return setRepeatingBurst(requests, BackpressureStrategy.DROP, handler);
+    }
+
+    @NonNull
+    public Flowable<RxCameraCaptureEvent> setRepeatingRequest(@NonNull final CaptureRequest captureRequest,
+                                                              final Handler handler) {
+        return setRepeatingRequest(captureRequest, BackpressureStrategy.DROP, handler);
     }
 }
