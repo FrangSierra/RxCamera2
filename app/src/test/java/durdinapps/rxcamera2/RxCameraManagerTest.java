@@ -10,19 +10,11 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.Collections;
-
 import durdinapps.rxcamera2.wrappers.OpenCameraEvent;
 import io.reactivex.observers.TestObserver;
-
-import static android.os.Build.VERSION_CODES.M;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class RxCameraManagerTest {
 
@@ -43,8 +35,6 @@ public class RxCameraManagerTest {
 
     @Mock
     OpenCameraEvent openCameraEvent;
-
-    private Void voidData = null;
 
     ArgumentCaptor<CameraDevice.StateCallback> stateCallback = ArgumentCaptor.forClass(CameraDevice.StateCallback.class);
     ArgumentCaptor<CameraManager.AvailabilityCallback> availabilityCallback = ArgumentCaptor.forClass(CameraManager.AvailabilityCallback.class);
@@ -79,7 +69,7 @@ public class RxCameraManagerTest {
     @Test
     public void registerAvailabilityCallback(){
         TestObserver<Boolean> testManagerObserver =
-                rxCameraManager.registerAvailabilityCallback(cameraManager, handler)
+                rxCameraManager.registerAvailabilityCallback(handler)
                         .test();
 
         verify(cameraManager, atLeastOnce()).registerAvailabilityCallback(availabilityCallback.capture(), eq(handler));
@@ -95,7 +85,7 @@ public class RxCameraManagerTest {
     @Test
     public void registerTorchCallback(){
         TestObserver<Boolean> testManagerObserver =
-                rxCameraManager.registerTorchCallback(cameraManager, handler)
+                rxCameraManager.registerTorchCallback(handler)
                         .test();
 
         verify(cameraManager, atLeastOnce()).registerTorchCallback(torchCallback.capture(), eq(handler));
@@ -111,7 +101,7 @@ public class RxCameraManagerTest {
     @Test
     public void setTorchMode() throws CameraAccessException{
         TestObserver<Void> testManagerObserver =
-                rxCameraManager.setTorchMode(cameraManager,ANY_CAMERA_ID, ANY_BOOLEAN)
+                rxCameraManager.setTorchMode(ANY_CAMERA_ID, ANY_BOOLEAN)
                         .test();
 
         verify(cameraManager, atLeastOnce()).setTorchMode(eq(ANY_CAMERA_ID), eq(ANY_BOOLEAN));

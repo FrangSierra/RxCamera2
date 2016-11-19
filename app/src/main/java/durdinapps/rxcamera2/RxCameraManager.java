@@ -69,8 +69,7 @@ public class RxCameraManager {
     }
 
     @NonNull
-    public static Observable<Boolean> registerAvailabilityCallback(@NonNull final CameraManager cameraManager,
-                                                                   @NonNull final Handler handler) {
+    public Observable<Boolean> registerAvailabilityCallback(@NonNull final Handler handler) {
         return Observable.create(new ObservableOnSubscribe<Boolean>() {
             @Override
             public void subscribe(final ObservableEmitter e) throws Exception {
@@ -103,8 +102,7 @@ public class RxCameraManager {
     }
 
     @NonNull
-    public static Observable<Boolean> registerTorchCallback(@NonNull final CameraManager cameraManager,
-                                                            @NonNull final Handler handler) {
+    public Observable<Boolean> registerTorchCallback(@NonNull final Handler handler) {
         return Observable.create(new ObservableOnSubscribe<Boolean>() {
             @Override
             public void subscribe(final ObservableEmitter e) throws Exception {
@@ -136,8 +134,7 @@ public class RxCameraManager {
     }
 
     @NonNull
-    public static Completable setTorchMode(@NonNull final CameraManager cameraManager,
-                                           @NonNull final String cameraId, final boolean enabled) {
+    public Completable setTorchMode(@NonNull final String cameraId, final boolean enabled) {
         return Completable.create(new CompletableOnSubscribe() {
             @Override
             public void subscribe(CompletableEmitter e) throws Exception {
