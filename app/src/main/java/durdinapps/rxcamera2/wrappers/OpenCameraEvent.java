@@ -15,6 +15,7 @@ public class OpenCameraEvent {
     public enum EventType {
         OPENED,
         DISCONNECTED,
-        ERROR;
+        ERROR,
+        CLOSED;
     }
 }

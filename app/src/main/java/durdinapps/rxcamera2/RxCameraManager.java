@@ -15,6 +15,7 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.functions.Cancellable;
 
+import static durdinapps.rxcamera2.wrappers.OpenCameraEvent.EventType.CLOSED;
 import static durdinapps.rxcamera2.wrappers.OpenCameraEvent.EventType.DISCONNECTED;
 import static durdinapps.rxcamera2.wrappers.OpenCameraEvent.EventType.ERROR;
 import static durdinapps.rxcamera2.wrappers.OpenCameraEvent.EventType.OPENED;
@@ -53,6 +54,11 @@ public class RxCameraManager {
                         @Override
                         public void onError(CameraDevice camera, int error) {
                             e.onNext(new OpenCameraEvent(new RxCameraDevice(camera), ERROR));
+                        }
+
+                        @Override
+                        public void onClosed(CameraDevice camera) {
+                            e.onNext(new OpenCameraEvent(new RxCameraDevice(camera), CLOSED));
                         }
                     }, handler);
                 } catch (CameraAccessException | IllegalArgumentException | SecurityException ex) {
