@@ -5,6 +5,7 @@ import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.InputConfiguration;
+import android.hardware.camera2.params.OutputConfiguration;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.view.Surface;
@@ -24,7 +25,7 @@ public class RxCameraDevice {
 
     private final CameraDevice cameraDevice;
 
-    public RxCameraDevice(CameraDevice cameraDevice){
+    public RxCameraDevice(CameraDevice cameraDevice) {
         this.cameraDevice = cameraDevice;
     }
 
@@ -74,13 +75,29 @@ public class RxCameraDevice {
     }
 
     @NonNull
-    public Single<RxConfigureSessionEvent> createCaptureSessionByOutputConfigurations(@NonNull final List<Surface> outputs,
-                                                                                      final Handler handler) {
+    public Single<RxConfigureSessionEvent> createConstrainedHighSpeedCaptureSession(@NonNull final List<Surface> outputs,
+                                                                                    final Handler handler) {
         return Single.create(new SingleOnSubscribe<RxConfigureSessionEvent>() {
             @Override
             public void subscribe(final SingleEmitter e) throws Exception {
                 try {
                     cameraDevice.createConstrainedHighSpeedCaptureSession(outputs, new RxCameraStateCallback(e), handler);
+                } catch (CameraAccessException | IllegalStateException | IllegalArgumentException ex) {
+                    e.onError(ex);
+                }
+            }
+        });
+    }
+
+
+    @NonNull
+    public Single<RxConfigureSessionEvent> createCaptureSessionByOutputConfigurations(final List<OutputConfiguration> outputConfiguration,
+                                                                                      final Handler handler) {
+        return Single.create(new SingleOnSubscribe<RxConfigureSessionEvent>() {
+            @Override
+            public void subscribe(final SingleEmitter e) throws Exception {
+                try {
+                    cameraDevice.createCaptureSessionByOutputConfigurations(outputConfiguration, new RxCameraStateCallback(e), handler);
                 } catch (CameraAccessException | IllegalStateException | IllegalArgumentException ex) {
                     e.onError(ex);
                 }

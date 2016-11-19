@@ -10,8 +10,10 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
 import durdinapps.rxcamera2.wrappers.OpenCameraEvent;
 import io.reactivex.observers.TestObserver;
+
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
@@ -51,8 +53,8 @@ public class RxCameraManagerTest {
     @Test
     public void openCamera() throws CameraAccessException {
         TestObserver<OpenCameraEvent> testManagerObserver =
-        rxCameraManager.openCamera(ANY_CAMERA_ID, handler)
-                .test();
+                rxCameraManager.openCamera(ANY_CAMERA_ID, handler)
+                        .test();
 
         verify(cameraManager, atLeastOnce()).openCamera(eq(ANY_CAMERA_ID), stateCallback.capture(), eq(handler));
 
@@ -67,7 +69,7 @@ public class RxCameraManagerTest {
     }
 
     @Test
-    public void registerAvailabilityCallback(){
+    public void registerAvailabilityCallback() {
         TestObserver<Boolean> testManagerObserver =
                 rxCameraManager.registerAvailabilityCallback(handler)
                         .test();
@@ -83,7 +85,7 @@ public class RxCameraManagerTest {
     }
 
     @Test
-    public void registerTorchCallback(){
+    public void registerTorchCallback() {
         TestObserver<Boolean> testManagerObserver =
                 rxCameraManager.registerTorchCallback(handler)
                         .test();
@@ -99,7 +101,7 @@ public class RxCameraManagerTest {
     }
 
     @Test
-    public void setTorchMode() throws CameraAccessException{
+    public void setTorchMode() throws CameraAccessException {
         TestObserver<Void> testManagerObserver =
                 rxCameraManager.setTorchMode(ANY_CAMERA_ID, ANY_BOOLEAN)
                         .test();
