@@ -11,7 +11,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import durdinapps.rxcamera2.wrappers.OpenCameraEvent;
+import durdinapps.rxcamera2.wrappers.RxOpenCameraEvent;
 import io.reactivex.observers.TestObserver;
 
 import static org.mockito.ArgumentMatchers.eq;
@@ -36,7 +36,7 @@ public class RxCameraManagerTest {
     Handler handler;
 
     @Mock
-    OpenCameraEvent openCameraEvent;
+    RxOpenCameraEvent openCameraEvent;
 
     ArgumentCaptor<CameraDevice.StateCallback> stateCallback = ArgumentCaptor.forClass(CameraDevice.StateCallback.class);
     ArgumentCaptor<CameraManager.AvailabilityCallback> availabilityCallback = ArgumentCaptor.forClass(CameraManager.AvailabilityCallback.class);
@@ -52,7 +52,7 @@ public class RxCameraManagerTest {
 
     @Test
     public void openCamera() throws CameraAccessException {
-        TestObserver<OpenCameraEvent> testManagerObserver =
+        TestObserver<RxOpenCameraEvent> testManagerObserver =
                 rxCameraManager.openCamera(ANY_CAMERA_ID, handler)
                         .test();
 
