@@ -3,11 +3,11 @@ package durdinapps.rxcamera2.wrappers;
 
 import durdinapps.rxcamera2.RxCameraDevice;
 
-public class OpenCameraEvent {
+public class RxOpenCameraEvent {
     public final RxCameraDevice cameraDevice;
     public final EventType eventType;
 
-    public OpenCameraEvent(RxCameraDevice cameraDevice, EventType eventType) {
+    public RxOpenCameraEvent(RxCameraDevice cameraDevice, EventType eventType) {
         this.cameraDevice = cameraDevice;
         this.eventType = eventType;
     }
@@ -15,6 +15,7 @@ public class OpenCameraEvent {
     public enum EventType {
         OPENED,
         DISCONNECTED,
-        ERROR;
+        ERROR,
+        CLOSED;
     }
 }

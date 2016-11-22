@@ -6,7 +6,7 @@ import android.hardware.camera2.CameraManager;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
-import durdinapps.rxcamera2.wrappers.OpenCameraEvent;
+import durdinapps.rxcamera2.wrappers.RxOpenCameraEvent;
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
 import io.reactivex.CompletableOnSubscribe;
@@ -15,9 +15,10 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.functions.Cancellable;
 
-import static durdinapps.rxcamera2.wrappers.OpenCameraEvent.EventType.DISCONNECTED;
-import static durdinapps.rxcamera2.wrappers.OpenCameraEvent.EventType.ERROR;
-import static durdinapps.rxcamera2.wrappers.OpenCameraEvent.EventType.OPENED;
+import static durdinapps.rxcamera2.wrappers.RxOpenCameraEvent.EventType.CLOSED;
+import static durdinapps.rxcamera2.wrappers.RxOpenCameraEvent.EventType.DISCONNECTED;
+import static durdinapps.rxcamera2.wrappers.RxOpenCameraEvent.EventType.ERROR;
+import static durdinapps.rxcamera2.wrappers.RxOpenCameraEvent.EventType.OPENED;
 
 public class RxCameraManager {
 
@@ -33,26 +34,31 @@ public class RxCameraManager {
     }
 
     @NonNull
-    public Observable<OpenCameraEvent> openCamera(@NonNull final String cameraId,
-                                                  @NonNull final Handler handler) {
-        return Observable.create(new ObservableOnSubscribe<OpenCameraEvent>() {
+    public Observable<RxOpenCameraEvent> openCamera(@NonNull final String cameraId,
+                                                    @NonNull final Handler handler) {
+        return Observable.create(new ObservableOnSubscribe<RxOpenCameraEvent>() {
             @Override
             public void subscribe(final ObservableEmitter e) throws Exception {
                 try {
                     cameraManager.openCamera(cameraId, new CameraDevice.StateCallback() {
                         @Override
                         public void onOpened(CameraDevice camera) {
-                            e.onNext(new OpenCameraEvent(new RxCameraDevice(camera), OPENED));
+                            e.onNext(new RxOpenCameraEvent(new RxCameraDevice(camera), OPENED));
                         }
 
                         @Override
                         public void onDisconnected(CameraDevice camera) {
-                            e.onNext(new OpenCameraEvent(new RxCameraDevice(camera), DISCONNECTED));
+                            e.onNext(new RxOpenCameraEvent(new RxCameraDevice(camera), DISCONNECTED));
                         }
 
                         @Override
                         public void onError(CameraDevice camera, int error) {
-                            e.onNext(new OpenCameraEvent(new RxCameraDevice(camera), ERROR));
+                            e.onNext(new RxOpenCameraEvent(new RxCameraDevice(camera), ERROR));
+                        }
+
+                        @Override
+                        public void onClosed(CameraDevice camera) {
+                            e.onNext(new RxOpenCameraEvent(new RxCameraDevice(camera), CLOSED));
                         }
                     }, handler);
                 } catch (CameraAccessException | IllegalArgumentException | SecurityException ex) {
@@ -63,8 +69,7 @@ public class RxCameraManager {
     }
 
     @NonNull
-    public static Observable<Boolean> registerAvailabilityCallback(@NonNull final CameraManager cameraManager,
-                                                                   @NonNull final Handler handler) {
+    public Observable<Boolean> registerAvailabilityCallback(@NonNull final Handler handler) {
         return Observable.create(new ObservableOnSubscribe<Boolean>() {
             @Override
             public void subscribe(final ObservableEmitter e) throws Exception {
@@ -97,8 +102,7 @@ public class RxCameraManager {
     }
 
     @NonNull
-    public static Observable<Boolean> registerTorchCallback(@NonNull final CameraManager cameraManager,
-                                                            @NonNull final Handler handler) {
+    public Observable<Boolean> registerTorchCallback(@NonNull final Handler handler) {
         return Observable.create(new ObservableOnSubscribe<Boolean>() {
             @Override
             public void subscribe(final ObservableEmitter e) throws Exception {
@@ -130,8 +134,7 @@ public class RxCameraManager {
     }
 
     @NonNull
-    public static Completable setTorchMode(@NonNull final CameraManager cameraManager,
-                                           @NonNull final String cameraId, final boolean enabled) {
+    public Completable setTorchMode(@NonNull final String cameraId, final boolean enabled) {
         return Completable.create(new CompletableOnSubscribe() {
             @Override
             public void subscribe(CompletableEmitter e) throws Exception {
